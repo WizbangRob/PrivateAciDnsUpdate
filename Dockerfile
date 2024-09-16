@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
 RUN yum check-update
-RUN yum install /usr/sbin/adduser
+RUN yum install shadow-utils
 
 WORKDIR /app
 
