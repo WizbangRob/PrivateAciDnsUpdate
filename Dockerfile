@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
-RUN yum install shadow-utils
+yum install shadow-utils
 
 WORKDIR /app
 
