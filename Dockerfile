@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
+RUN sudo yum install adduser
+
 WORKDIR /app
 
 COPY az_cli.sh .
