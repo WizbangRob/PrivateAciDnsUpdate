@@ -1,4 +1,10 @@
-FROM mcr.microsoft.com/azure-cli AS base
+# FROM mcr.microsoft.com/azure-cli AS base
+FROM alpine
+RUN apk add py3-pip
+RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
+RUN pip install --upgrade pip
+RUN pip install azure-cli
+CMD sh
 
 WORKDIR /app
 
