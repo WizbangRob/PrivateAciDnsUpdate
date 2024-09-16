@@ -1,26 +1,18 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
-ARG ARG_ACI_INSTANCE_NAME
-ARG ARG_RESOURCE_GROUP
-ARG ARG_APP_ID
-ARG ARG_APP_PASSWORD
-ARG ARG_APP_TENANT_ID
-ARG ARG_A_RECORD_NAME
-ARG ARG_DNS_ZONE_NAME
+WORKDIR /app
 
-ENV ACI_INSTANCE_NAME=$ARG_ACI_INSTANCE_NAME 
-ENV RESOURCE_GROUP=$ARG_RESOURCE_GROUP
-ENV APP_ID=$ARG_APP_ID
-ENV APP_PASSWORD=$ARG_APP_PASSWORD
-ENV APP_TENANT_ID=$ARG_APP_TENANT_ID
-ENV A_RECORD_NAME=$ARG_A_RECORD_NAME
-ENV DNS_ZONE_NAME=$ARG_DNS_ZONE_NAME
+COPY az_cli.sh .
 
-RUN az --version
+# Creates a non-root user with an explicit UID
+RUN adduser -u 5678 --disabled-password --gecos "" appuser
 
-RUN az login --service-principal -u $APP_ID -p $APP_PASSWORD --tenant $APP_TENANT_ID
+# Assign the new user as the owner of the app folder
+RUN chown -R appuser /app 
 
-RUN ACI_IP=$(az container show --name $ACI_INSTANCE_NAME --resource-group $RESOURCE_GROUP --query ipAddress.ip --output tsv)
+# Give the new user execute permissions on the file
+RUN chmod u+x az_cli.sh
 
-RUN az network private-dns record-set a update --name $A_RECORD_NAME --resource-group $RESOURCE_GROUP --zone-name $DNS_ZONE_NAME --set aRecords[0].ipv4Address=$ACI_IP
+USER appuser
 
+CMD [ "./az_cli.sh" ]
