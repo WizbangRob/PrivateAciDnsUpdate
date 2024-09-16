@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY az_cli.sh .
 
-RUN yum install adduser
+su -l
 
 # Creates a non-root user with an explicit UID
 RUN adduser -u 5678 --disabled-password --gecos "" appuser
