@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
-RUN sudo yum install adduser
+RUN yum install adduser
 
 WORKDIR /app
 
