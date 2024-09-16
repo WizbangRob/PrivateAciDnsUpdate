@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
+RUN cat /etc/os-release
+
 RUN yum check-update
 RUN yum install shadow-utils
 
