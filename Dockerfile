@@ -5,7 +5,7 @@ WORKDIR /app
 COPY az_cli.sh .
 
 # Creates a non-root user with an explicit UID
-RUN /usr/sbin/adduser -u 5678 --disabled-password --gecos "" appuser
+RUN adduser -u 5678 --disabled-password --gecos "" appuser
 
 # Assign the new user as the owner of the app folder
 RUN chown -R appuser /app 
