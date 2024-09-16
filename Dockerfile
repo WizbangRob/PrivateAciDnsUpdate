@@ -1,25 +1,10 @@
-# FROM mcr.microsoft.com/azure-cli AS base
-FROM alpine
-RUN apk add py3-pip
-RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
-RUN pip install --upgrade pip
-RUN pip install azure-cli
-CMD sh
+FROM mcr.microsoft.com/azure-cli AS base
 
-WORKDIR /app
+az --version
 
-COPY az_cli.sh .
+az login --service-principal -u $APP_ID -p $APP_PASSWORD --tenant $APP_TENANT_ID
 
-# Creates a non-root user with an explicit UID
-RUN adduser -u 5678 --disabled-password --gecos "" appuser
+ACI_IP=$(az container show --name $ACI_INSTANCE_NAME --resource-group $RESOURCE_GROUP --query ipAddress.ip --output tsv)
 
-# Assign the new user as the owner of the app folder
-RUN chown -R appuser /app 
-
-# Give the new user execute permissions on the file
-RUN chmod u+x az_cli.sh
-
-USER appuser
-
-CMD [ "./az_cli.sh" ]
+az network private-dns record-set a update --name $A_RECORD_NAME --resource-group $RESOURCE_GROUP --zone-name $DNS_ZONE_NAME --set aRecords[0].ipv4Address=$ACI_IP
 
