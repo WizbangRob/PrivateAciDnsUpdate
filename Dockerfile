@@ -1,5 +1,13 @@
 FROM mcr.microsoft.com/azure-cli AS base
 
+ENV ACI_INSTANCE_NAME=null 
+ENV RESOURCE_GROUP=null
+ENV APP_ID=null
+ENV APP_PASSWORD=null
+ENV APP_TENANT_ID=null
+ENV A_RECORD_NAME=null
+ENV DNS_ZONE_NAME=null
+
 RUN az --version
 
 RUN az login --service-principal -u $APP_ID -p $APP_PASSWORD --tenant $APP_TENANT_ID
